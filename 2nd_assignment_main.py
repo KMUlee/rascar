@@ -11,11 +11,54 @@ from SEN040134.SEN040134_Tracking import SEN040134_Tracking
 from car import Car
 import time
 
+import RPi.GPIO as GPIO
+import threading
+
+
+def song():
+    # Raspberry Pi의 buzzer_pin을 8번으로 사용합니다.
+    buzzer_pin = 8
+
+    # BCM GPIO 핀 번호를 사용하도록 설정합니다.
+    GPIO.setmode(GPIO.BOARD)
+
+    """
+    음계별 표준 주파수
+    [ 도, 레, 미, 파, 솔, 라 시, 도]
+    """
+    scale = [261.6, 293.6, 329.6, 349.2, 391.9, 440.0, 493.8, 523.2,587.3,622.2,659.2,698.4,415.3]
+
+    """
+    buzzer_pin 을 GPIO 출력으로 설정합니다. 이를 통해 led_pin으로
+    True 혹은 False를 쓸 수 있게 됩니다.
+    """
+    GPIO.setup(buzzer_pin, GPIO.OUT)
+
+    # Song Array
+    list = [10,9,10,9,10,6,8,7,5,0,2,5,6,2,12,6,7]
+
+    try:
+        p = GPIO.PWM(buzzer_pin, 100)
+        p.start(5)  # start the PWM on 5% duty cycle
+
+        for i in range(len(list)):
+            print(i + 1)
+            p.ChangeFrequency(scale[list[i]])
+            if i == 8 or i == 12 or i == 16 or:
+                time.sleep(0.6)
+            else:
+                time.sleep(0.3)
+
+        p.stop()  # stop the PWM output
+
+    finally:
+        GPIO.cleanup()
 
 class myCar(object):
 
     def __init__(self, car_name):
         self.car = Car(car_name)
+
 
     def drive_parking(self):
         self.car.drive_parking()
@@ -33,6 +76,7 @@ class myCar(object):
         num = 0
         curve = 0
         test =1
+        t = threading.Thread(target=song, daemon=True)
         while(True):
             rawData = self.car.color_getter.get_raw_data()
             print("R", rawData[0])
@@ -79,7 +123,8 @@ class myCar(object):
                     curve += 1
                     if curve == 2:
                         drive.stop()
-                elif line.is_equal_status([1,1,1,0,0]):
+                elif line.is_equal_status([1,1,1,0,0]) and num == 0:
+                    t.start()
                     front.turn(90)
                     time.sleep(1.4)
                     for i in range(3):
@@ -97,6 +142,7 @@ class myCar(object):
                     front.turn(60)
                     drive.go_forward(30)
                     time.sleep(0.3)
+                    num+=1
                 else:
                     front.turn(temp)
                 if 0 < distance < 15:
@@ -108,16 +154,16 @@ class myCar(object):
                         print("R", rawData[0])
                         print("G", rawData[1])
                         print("B", rawData[2])
+                        time.sleep(5)
                     elif rawData[1] > rawData[0] and rawData[1] > rawData[2]:
                         drive.stop()
                         print("Go")
                         print("R", rawData[0])
                         print("G", rawData[1])
                         print("B", rawData[2])
-                        time.sleep()
                         front.turn(120)
                         drive.go_backward(60)
-                        time.sleep(0.5)
+                        time.sleep(0.3)
                         test = 2
 
                 time.sleep(0.1)
