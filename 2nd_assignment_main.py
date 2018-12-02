@@ -99,31 +99,34 @@ class myCar(object):
                     time.sleep(0.3)
                 else:
                     front.turn(temp)
-                if 0 < distance < 15 and rawData[0] > rawData[1] and rawData[0] > rawData[2]:
+                if 0 < distance < 15:
                     drive.stop()
-                    print("Stop")
-                    print("R", rawData[0])
-                    print("G", rawData[1])
-                    print("B", rawData[2])
-                    time.sleep(5)
-                elif 0 < distance < 15 and rawData[1] > rawData[0] and rawData[1] > rawData[2]:
-                    drive.stop()
-                    print("Go")
-                    print("R", rawData[0])
-                    print("G", rawData[1])
-                    print("B", rawData[2])
-                    time.sleep()
-                    #front.turn(120)
-                    #drive.go_backward(60)
-                    #time.sleep(0.5)
-                    #test = 2
+                    time.sleep(0.1)
+                    if rawData[0] > rawData[1] and rawData[0] > rawData[2]:
+                        drive.stop()
+                        print("Stop")
+                        print("R", rawData[0])
+                        print("G", rawData[1])
+                        print("B", rawData[2])
+                    elif rawData[1] > rawData[0] and rawData[1] > rawData[2]:
+                        drive.stop()
+                        print("Go")
+                        print("R", rawData[0])
+                        print("G", rawData[1])
+                        print("B", rawData[2])
+                        time.sleep()
+                        front.turn(120)
+                        drive.go_backward(60)
+                        time.sleep(0.5)
+                        test = 2
+
                 time.sleep(0.1)
             elif test == 2:
                 drive.go_forward(60)
                 front.turn(60)
-                time.sleep(1)
+                time.sleep(0.5)
                 front.turn(120)
-                time.sleep(1.7)
+                time.sleep(0.7)
                 test = 1
             elif test == 3:
                 drive.stop()
