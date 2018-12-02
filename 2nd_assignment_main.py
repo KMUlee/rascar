@@ -38,13 +38,6 @@ class myCar(object):
             print("R", rawData[0])
             print("G", rawData[1])
             print("B", rawData[2])
-            distance = self.car.distance_detector.get_distance()
-            time.sleep(1)
-        while(True):
-            rawData = self.car.color_getter.get_raw_data()
-            print("R", rawData[0])
-            print("G", rawData[1])
-            print("B", rawData[2])
             print(test)
             print(line.read_digital())
             distance = self.car.distance_detector.get_distance()
@@ -83,7 +76,9 @@ class myCar(object):
                     drive.go_backward(60)
                     time.sleep(0.2)
                 elif line.is_equal_status([1,1,1,1,1]):
-                    drive.stop()
+                    curve += 1
+                    if curve == 2:
+                        drive.stop()
                 elif line.is_equal_status([1,1,1,0,0]):
                     front.turn(90)
                     time.sleep(1.4)
@@ -104,11 +99,13 @@ class myCar(object):
                     time.sleep(0.3)
                 else:
                     front.turn(temp)
-                if 0 < distance < 20:
+                if 0 < distance < 20 and rawData[0] > rawData[1] and rawData[0] > rawData[2]:
+                    drive.stop()
+                    time.sleep(5)
+                elif 0 < distance < 20 and rawData[1] > rawData[0] and rawData[1] > rawData[2]:
                     front.turn(120)
                     drive.go_backward(60)
                     time.sleep(0.5)
-                    curve += 1
                     test = 2
                 time.sleep(0.1)
             elif test == 2:
