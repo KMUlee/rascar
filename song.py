@@ -7,6 +7,7 @@ class Song():
 
         # BCM GPIO 핀 번호를 사용하도록 설정합니다.
         GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(buzzer_pin, GPIO.OUT)
 
         """
         음계별 표준 주파수
@@ -26,16 +27,21 @@ class Song():
         try:
             p = GPIO.PWM(buzzer_pin, 100)
             p.start(5)  # start the PWM on 5% duty cycle
-
-            for i in range(len(list)):
-                print(i + 1)
-                p.ChangeFrequency(scale[list[i]])
-                if i == 8 or i == 12 or i == 16:
-                    time.sleep(0.6)
-                else:
-                    time.sleep(0.3)
-
-            p.stop()  # stop the PWM output
+            n = 0
+            
+            while(True):
+                if n == 0:
+                    for i in range(len(list)):
+                        print(i + 1)
+                        p.ChangeFrequency(scale[list[i]])
+                        if i == 8 or i == 12 or i == 16:
+                            time.sleep(0.6)
+                        else:
+                            time.sleep(0.3)
+                    n = 1
+                    p.stop()
+                     # stop the PWM outpu
+            
 
         finally:
             GPIO.cleanup()

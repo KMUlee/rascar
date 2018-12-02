@@ -79,37 +79,39 @@ class myCar(object):
                     front.turn(temp)
                 elif line.is_equal_status([0,0,0,0,0]):
                     front.turn(120)
-                    drive.go_backward(60)
-                    time.sleep(0.2)
-                elif line.is_equal_status([1,1,1,1,1]):
-                    curve += 1
-                    if curve == 2:
-                        drive.stop()
+                    drive.go_backward(25)
+                    time.sleep(0.1)
+                elif line.is_equal_status([1,1,1,1,1]) or line.is_equal_status([1,1,1,1,0]):    
+                    drive.stop()
+                    break
                 elif line.is_equal_status([1,1,1,0,0]) and num == 0:
-                    t.start()
+                    try:
+                        t.start()
+                    except:
+                        pass
                     front.turn(90)
-                    time.sleep(1.4)
-                    for i in range(3):
+                    time.sleep(1.3)
+                    for i in range(2):
                         front.turn(60)
-                        drive.go_backward(20)
-                        time.sleep(2)
+                        drive.go_backward(30)
+                        time.sleep(1.5)
                         front.turn(120)
-                        drive.go_forward(20)
+                        drive.go_forward(30)
                         time.sleep(1.3)
-                    front.turn(60)
-                    drive.go_backward(20)
-                    time.sleep(2.3)
+                    front.turn(90)
+                    drive.go_backward(30)
+                    time.sleep(3)
                     drive.stop()
                     time.sleep(5)
                     front.turn(60)
                     drive.go_forward(30)
-                    time.sleep(0.3)
+                    time.sleep(0.7)
                     num+=1
                 else:
                     front.turn(temp)
-                if 0 < distance < 15:
-                    drive.stop()
-                    time.sleep(0.1)
+                if 0 < distance < 8:
+                    drive.go_backward(30)
+                    time.sleep(0.2)
                     if rawData[0] > rawData[1] and rawData[0] > rawData[2]:
                         drive.stop()
                         print("Stop")
@@ -118,6 +120,9 @@ class myCar(object):
                         print("B", rawData[2])
                         time.sleep(5)
                     elif rawData[1] > rawData[0] and rawData[1] > rawData[2]:
+                        drive.stop()
+                        drive.go_backward(20)
+                        time.sleep(0.1)
                         drive.stop()
                         print("Go")
                         print("R", rawData[0])
@@ -132,9 +137,9 @@ class myCar(object):
             elif test == 2:
                 drive.go_forward(60)
                 front.turn(60)
-                time.sleep(0.5)
+                time.sleep(0.9)
                 front.turn(120)
-                time.sleep(0.7)
+                time.sleep(1.3)
                 test = 1
             elif test == 3:
                 drive.stop()
